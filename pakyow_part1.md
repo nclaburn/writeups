@@ -10,5 +10,5 @@ I wanted to document my experience of creating an application using Pakyow in th
 
 Documentation
 =========
-Pakyow is very well 
+Pakyow's  [manual](http://pakyow.com/manual) serves as the documentation. The manual covers.
 

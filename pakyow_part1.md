@@ -25,9 +25,9 @@ In typical Ruby style, this is easy.
 
 <code>pakyow new curator</code>
 
-At this piont you have a working Pakyow application.
+At this piont you have a working Pakyow application. Type <code>pakyow server</code>  to start the application.
 
-
+#Gemfile
 
 
 [^1]:http://pakyow.com/manual#section_1

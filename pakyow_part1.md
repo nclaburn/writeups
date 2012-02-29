@@ -28,6 +28,41 @@ In typical Ruby style, this is easy.
 At this piont you have a working Pakyow application. Type <code>pakyow server</code>  to start the application.
 
 #Gemfile
+Using [Bundler](http://gembundler.com/) is not required for Pakyow, but it does help with gem versioning and deployment. The `Gemfile` has been broken out into 3 sections, which are described below.
+
+##Global
+ *Note that pakyow was installed in the global gemset in the pervious section. It is includedin the `Gemfile` for deployment purposes. Also, specific versions of gems can be "locked"  if needed, ensuring that deployment is consistent.*
+ 
+Since this is a pakyow application it should be included in the `Gemfile`.  [pakyow-auth](https://github.com/metabahn/pakyow-auth) is the authentication module (more on that later). Because `pakyow-auth` has yet to be releasd as a gem, it is installed directly from the github repository. [rake](http://rake.rubyforge.org/) and [rack](http://rack.rubyforge.org/) are familiar gemsets and will not be covered here. [data_mapper](http://rubydoc.info/gems/datamapper/1.2.0/frames) is a meta gem that includes the dependencies for the [DataMapper](http://datamapper.org/) ORM. [dm-tags](http://dm-tags.rubyforge.org/) is a gem that integrates with DataMapper to provide model tagging capability.
+
+    gem 'data_mapper'
+    gem 'dm-tags'
+    gem 'pakyow-auth' , :git => "git://github.com/metabahn/pakyow-auth.git"
+    gem 'pakyow'
+    gem 'rack'
+    gem 'rake'
+    
+
+
+##Production
+Gems in this section are only installed when pakyow is deployed in `production` mode. [dm-postgres-adapter](https://github.com/datamapper/dm-postgres-adapter) binds DataMapper to the  Postgresql databse. [pg](https://bitbucket.org/ged/ruby-pg/wiki/Home) is the ruby wrapper used to communicate with the production [PostgreSQL](http://www.postgresql.org/) database.
+
+    group :production do
+      gem 'dm-postgres-adapter'
+      gem 'pg'
+    end
+
+
+##Development
+Development gems include those required for debugging our application. Additionally, [dm-sqlite-adapter](https://github.com/datamapper/dm-sqlite-adapter) is included to provide a binding between DataMapper and the SQLite(http://sqlite.org/) database. Finally, during development the [thin](http://code.macournoyer.com/thin/) webserver is used. The use of "thin" is a personal preference and not a Pakyow requirement.
+
+    group :development do
+      gem 'linecache19'
+      gem 'ruby-debug-base19x'
+      gem 'ruby-debug19'
+      gem 'dm-sqlite-adapter'
+      gem 'thin'
+    end
 
 
 [^1]:http://pakyow.com/manual#section_1

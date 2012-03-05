@@ -8,7 +8,10 @@ I always felt like Rails was somewhat overkill for my projects, which range from
 
 1.  Pakyow is lightweight
 2.  I like the idea of no Ruby code in my views. See Bryan's blog post [Keep your peanutbutter out of my chocolate](http://notmagic.org/2012/01/23/peanut_butter_chocolate). This meant I could focus on advancing my  HTML, CSS and Javascript skills and not worry about the framework.
-3.  The creators are members of my local Ruby group. 
+3.  The creators are members of my local Ruby group.
+
+## About this writeup
+This writeup is meant to provide the reader with an example of how to use Pakyow to create a simple web based application. Curator leverages numerous gems in addition to the Pakyow framework. Usage and configuration of gems, will be left as an exercise for the reader.
 
 ##Documentation
 
@@ -63,6 +66,53 @@ Development gems include those required for debugging our application. Additiona
       gem 'dm-sqlite-adapter'
       gem 'thin'
     end
+
+#bundler
+To use the gems defined in the `Gemfile`, `bundler` must be run.
+
+    bundle install
+
+#Database
+DataMapper is used as the database layer for two reasons. First, it is lighter weight than ActiveRecord. Second, [pakyow-auth](https://github.com/metabahn/pakyow-auth), which provides authentication, currently requires DataMapper. The following sections describe how DataMapper is setup inside of Curator. Production configuration of Postgres will not be covered.
+
+##Setup 
+SQLite(http://sqlite.org/) will be used as the development database. To configure DataMapper add the following to `config/application.rb`
+
+    DataMapper.setup(:default, "sqlite://#{Dir.pwd}/development.sqlite")
+    DataMapper::Logger.new("#{Dir.pwd}/logs/dm.log", :debug)
+
+##Initialization
+DataMapper will be initialized in the `initialize` method of the application. This will allow DataMapper to finalize the models and migrate the database when the application starts.
+
+    def initialize
+      super
+      DataMapper.finalize
+      DataMapper.auto_upgrade!
+    end
+
+#Model
+Curator has "cards". These cards have a `name`, some `content`, a `date`, and a few `tags`. The card model is shown below.
+
+    class Card
+      include DataMapper::Resource
+      attr_accessor :id, :title, :body, :user
+  
+      property :id,          Serial # auto-increment integer key
+      property :name,        String 
+      property :content,     Text
+      property :date,    Date
+      property :created_at,  DateTime
+
+      has_tags :tags
+      has 1, :user, :through => Resource
+    end
+
+The card model is straightforward thanks to DataMapper.
+
+##Binder
+
+
+
 
 
 [^1]:http://pakyow.com/manual#section_1

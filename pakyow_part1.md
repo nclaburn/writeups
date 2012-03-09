@@ -88,10 +88,9 @@ DataMapper will be initialized in the `initialize` method of the application. Th
       super
       DataMapper.finalize
       DataMapper.auto_upgrade!
-    end
 
 #Model
-Curator has "cards". These cards have a `name`, some `content`, a `date`, and a few `tags`. The card model is shown below.
+Curator has "cards". These cards have a `name`, some `content`, and a `date`. The card model is shown below.
 
     class Card
       include DataMapper::Resource
@@ -107,11 +106,32 @@ Curator has "cards". These cards have a `name`, some `content`, a `date`, and a 
       has 1, :user, :through => Resource
     end
 
-The card model is straightforward thanks to DataMapper.
+##Associations
+Cards have may or may not have `tags`. The `dm-tags` takes care of parsing the comma delimited tags as well as storing/retrieving them to/from the database. Each card belongs to one user. This association  is demonstrated by the `has 1, :user, :through => Resources` association. For more information on associations see the DataMapper [documentation](http://datamapper.org/docs/associations.html) on the subject.
 
-##Binder
+
+#Binder
+Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes the presentation of model data differs from how it is represented in the model. Using the [example](http://pakyow.com/manual#section_9) found in the Pakyow manual: A user's full name is needed for display. Instead of using HTML, CSS or Javascript tricks to concatenate the `first_name` and `last_name` fields, a binder should be used. The binder provides the `full_name` method, returning the combination of the first and last name. 
+
+##tag_list
+In Curator, the Card model has an associated binder. Because `dm-tags` default `to_s` behavior produces a string like `[tag1, tag2, tag3]`, the string must be modified to be presentable to the user. `dm-tags` provides a method `tag_collection`, which will be called in the binder.
 
 
+    class CardBinder < Pakyow::Presenter::Binder
+      binder_for :card  
+      def tag_list 
+           bindable.tag_collection
+      end
+      def card_link    
+      	   { :href => "/cards/#{bindable.id}" } 
+       end  
+       def edit_card_link    
+          { :href => "/cards/edit/#{bindable.id}" }  
+       end
+    end 
+    
+Since the `tag_list` method has been associated with a binder it will be called instead of `Card.tag_list`.
+##*_links
 
 
 

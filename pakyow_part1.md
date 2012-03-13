@@ -109,6 +109,8 @@ Curator has "cards". These cards have a `name`, some `content`, and a `date`. Th
 ##Associations
 Cards have may or may not have `tags`. The `dm-tags` takes care of parsing the comma delimited tags as well as storing/retrieving them to/from the database. Each card belongs to one user. This association  is demonstrated by the `has 1, :user, :through => Resources` association. For more information on associations see the DataMapper [documentation](http://datamapper.org/docs/associations.html) on the subject.
 
+#Views
+Pakyow views are html, plain and simple. 
 
 #Binder
 Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes the presentation of model data differs from how it is represented in the model. Using the [example](http://pakyow.com/manual#section_9) found in the Pakyow manual: A user's full name is needed for display. Instead of using HTML, CSS or Javascript tricks to concatenate the `first_name` and `last_name` fields, a binder should be used. The binder provides the `full_name` method, returning the combination of the first and last name. 

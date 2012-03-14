@@ -119,34 +119,45 @@ Rails views are `erb`files, a mix of Ruby and HTML. The main view of Curator is 
       <% @cards.each do |card| %>
         <div class='small_index_card yellow_card card_display ui-widget-content draggable'>          
           <div class='card_name'>
-            <%= card.name %>
+            <p><%= card.name %></p>
           </div>          
           <div class='card_content'>
-            <%= card.content %>
+            <p><%= card.content %></p>
           </div>          
           <div class='card_tags'>
-            <%= card.tag_collection %>
+            <p><%= card.tag_collection %></p>
           </div>          
           <div class='card_date'>
-            <%= card.date %>
+            <p><%= card.date %></p>
         </div>
       <% end %>
     </div>
 
-The Ruby in this code iterates through the collection of cards creating new instances for display. Each card is displayed using the same HTML and CSS.
+The code iterates through the collection of cards creating new instances for display. Each card is displayed using the same HTML and CSS. Data, code, and HTML are mixed.
+
 
 ## The Pakyow Way
 Below is the equivalent view code in Pakyow.
 
     <div id='card_pane' class="droppable">
       <div class='small_index_card yellow_card card_display ui-widget-content draggable'>          
-        <div class='card[name]'></div>          
-        <div class='card[content]'></div>          
-        <div class='card[tag_collection]'></div>          
-        <div class='card[date]'></div>
+        <div class='card_name'>
+          <p  name='card[name]'></p>
+        </div>          
+        <div class='card_content'>
+    	  <p name='card[content]'></p>
+        </div>          
+        <div class='card_tags'>
+          <p name='card[tag_collection]'>
+         </div>          
+        <div class='card_date'>
+          <p  name='card[date]'></p>
+        </div>
     </div>
     
-"But that will only display a single card, the Rails way displays all of the cards." Not so. This is where the power of the purely HTML view can be seen. In Pakyow the view only describes how the data is being displayed not how many times the data is displayed. In the case of Curator's index cards, each card is displayed the exact same way. The logic that determines the number of cards to display is kept out of the view.
+"But that will only display a single card, the Rails way displays all of the cards." Not so. This is where the power of the purely HTML view can be seen. In Pakyow the view only describes how the data is being displayed not how many times the data is displayed. In the case of Curator's index cards, each card is displayed the exact same way. The logic that determines the number of cards to display is pushed lower down the stack and  kept out of the view.
+
+The `name` attributes on on the `<p>` elements is bound to the `card` model using Binders. Pakyow uses this binding information to populate the HTML view before it is displayed.
 
 
 

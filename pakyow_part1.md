@@ -76,7 +76,7 @@ To use the gems defined in the `Gemfile`, `bundler` must be run.
 DataMapper is used as the database layer for two reasons. First, it is lighter weight than ActiveRecord. Second, [pakyow-auth](https://github.com/metabahn/pakyow-auth), which provides authentication, currently requires DataMapper. The following sections describe how DataMapper is setup inside of Curator. Production configuration of Postgres will not be covered.
 
 ##Setup 
-SQLite(http://sqlite.org/) will be used as the development database. To configure DataMapper add the following to `config/application.rb`
+[SQLite](http://sqlite.org/) will be used as the development database. To configure DataMapper add the following to `config/application.rb`
 
     DataMapper.setup(:default, "sqlite://#{Dir.pwd}/development.sqlite")
     DataMapper::Logger.new("#{Dir.pwd}/logs/dm.log", :debug)
@@ -110,7 +110,45 @@ Curator has "cards". These cards have a `name`, some `content`, and a `date`. Th
 Cards have may or may not have `tags`. The `dm-tags` takes care of parsing the comma delimited tags as well as storing/retrieving them to/from the database. Each card belongs to one user. This association  is demonstrated by the `has 1, :user, :through => Resources` association. For more information on associations see the DataMapper [documentation](http://datamapper.org/docs/associations.html) on the subject.
 
 #Views
-Pakyow views are html, plain and simple. 
+From the Pakyow [manual](http://pakyow.com/manual#section_3): "Views in Pakyow contain no logic and simply define a structure around the data to be presented." That sentence pretty well sums it up. Views are HTML, plain and simple. This divorcing of the view from logic allows front end designers to conentrate on the presentation of the data, while back end developers implement business logic. This is the polar opposite to the way Rails [implements](http://guides.rubyonrails.org/layouts_and_rendering.html) views. I am making an assumption that most readers are familiar with the [MVC](https://en.wikipedia.org/wiki/Model-view-controller) concept. The following section describe how a view is created in Pakyow. As a counterpoint example I wanted, first, to show how the view may look in Rails.
+
+##The Rails Way
+Rails views are `erb`files, a mix of Ruby and HTML. The main view of Curator is the collection of index cards. Below is one way to implement the display of multiple cards using Rails `erb`.
+
+    <div id='card_pane' class="droppable">
+      <% @cards.each do |card| %>
+        <div class='small_index_card yellow_card card_display ui-widget-content draggable'>          
+          <div class='card_name'>
+            <%= card.name %>
+          </div>          
+          <div class='card_content'>
+            <%= card.content %>
+          </div>          
+          <div class='card_tags'>
+            <%= card.tag_collection %>
+          </div>          
+          <div class='card_date'>
+            <%= card.date %>
+        </div>
+      <% end %>
+    </div>
+
+The Ruby in this code iterates through the collection of cards creating new instances for display. Each card is displayed using the same HTML and CSS.
+
+## The Pakyow Way
+Below is the equivalent view code in Pakyow.
+
+    <div id='card_pane' class="droppable">
+      <div class='small_index_card yellow_card card_display ui-widget-content draggable'>          
+        <div class='card[name]'></div>          
+        <div class='card[content]'></div>          
+        <div class='card[tag_collection]'></div>          
+        <div class='card[date]'></div>
+    </div>
+    
+"But that will only display a single card, the Rails way displays all of the cards." Not so. This is where the power of the purely HTML view can be seen. In Pakyow the view only describes how the data is being displayed not how many times the data is displayed. In the case of Curator's index cards, each card is displayed the exact same way. The logic that determines the number of cards to display is kept out of the view.
+
+
 
 #Binder
 Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes the presentation of model data differs from how it is represented in the model. Using the [example](http://pakyow.com/manual#section_9) found in the Pakyow manual: A user's full name is needed for display. Instead of using HTML, CSS or Javascript tricks to concatenate the `first_name` and `last_name` fields, a binder should be used. The binder provides the `full_name` method, returning the combination of the first and last name. 

@@ -164,7 +164,15 @@ The `name` attributes on on the `<p>` elements is bound to the `card` model usin
 #Binder
 Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes the presentation of model data differs from how it is represented in the model. Using the [example](http://pakyow.com/manual#section_9) found in the Pakyow manual: A user's full name is needed for display. Instead of using HTML, CSS or Javascript tricks to concatenate the `first_name` and `last_name` fields, a binder should be used. The binder provides the `full_name` method, returning the combination of the first and last name. 
 
-##*_links
+## Example
+    class User < Pakyow::Presenter::Binder
+      binder_for :user
+      def full_name
+      	   user.first_name + ' ' + user.last_name
+       end  
+    end
+    
+## Curator
 
 
     class CardBinder < Pakyow::Presenter::Binder

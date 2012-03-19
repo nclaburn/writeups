@@ -162,19 +162,28 @@ The `name` attributes on on the `<p>` elements is bound to the `card` model usin
 
 
 #Binder
+*Question, are "Helpers" the Rails equivalent?*
+
 Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes the presentation of model data differs from how it is represented in the model. Using the [example](http://pakyow.com/manual#section_9) found in the Pakyow manual: A user's full name is needed for display. Instead of using HTML, CSS or Javascript tricks to concatenate the `first_name` and `last_name` fields, a binder should be used. The binder provides the `full_name` method, returning the combination of the first and last name. 
 
-## Example
+## Pakyow Example
     class User < Pakyow::Presenter::Binder
       binder_for :user
       def full_name
-      	   user.first_name + ' ' + user.last_name
+      	   user.first_name + '  ' + user.last_name
        end  
     end
     
 ## Curator
+Curator uses AJAX to create new cards and update existing cards. Instead of using javascript to concatenate together the url to process these commands, a Binder is used. Below is a portion of the view that allows users to update a card. The `itemprop` attribute will be replaced with the appropriate attribute when the Binder processes the view.
 
+      <form id='card_form' itemprop='card[update_card_link]' method='post'>  
+         <span id='_card_fields'></span>    
+         <input type="hidden" name="_method" value="put">  
+      </form>
 
+Below is the source for Curator's `CardBinder`. Three methods are defined in `CardBinder`: one for editing a card, one for linking to a card, and one for updating a card. When the `itemprop=card[update_card_link]` attribute, as shown above, is processed by the Binder, the `update_card_link` method will be called. `update_card_link` will replace `itemprop=card[update_card_link]` with with `action="/cards/3"`, where `3` is the `id` of the updated card. 
+    
     class CardBinder < Pakyow::Presenter::Binder
       binder_for :card  
       def card_link    
@@ -184,11 +193,11 @@ Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes t
           { :href => "/cards/edit/#{bindable.id}" }  
        end
        def update_card_link    
-          { :action => "/cards/edit/#{bindable.id}" }  
+          { :action => "/cards/#{bindable.id}" }  
        end
     end 
-
-
+    
+#Controller
 
 [^1]:http://pakyow.com/manual#section_1
 

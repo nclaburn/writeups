@@ -170,7 +170,7 @@ Binders in Pakyow provide a way to mainuplate data for presentation. Sometimes t
     class User < Pakyow::Presenter::Binder
       binder_for :user
       def full_name
-      	   user.first_name + '  ' + user.last_name
+      	   bindable.first_name + '  ' + bindable.last_name
        end  
     end
     
